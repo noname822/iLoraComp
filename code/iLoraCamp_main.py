@@ -90,8 +90,7 @@ for seed in seeds:
             if io == []:
                 continue
             model, tokenizer, cache, base_model = algorithm.load_base_model_and_lora_modules(lora_list, args.model_name_or_path)
-            step1 = 30
-            step2 = 10
+            step = 40
             prefs = {}
             #step 1
             module_weights,model,tokenizer = algorithm.lorahub_learning(model=model,
@@ -100,23 +99,12 @@ for seed in seeds:
                                                                         lora_module_list=lora_list,
                                                                         example_inputs=example_inputs,
                                                                         example_outputs=example_outputs,
-                                                                        max_inference_step=step1,
+                                                                        max_inference_step=step,
                                                                         start_weights=0.0,
                                                                         batch_size=5,
                                                                         mode='origin',
                                                                         )
-            #setp 2
-            module_weights,model,tokenizer = algorithm.lorahub_learning(model=model,
-                                                                        cache=cache,
-                                                                        tokenizer=tokenizer,
-                                                                        lora_module_list=lora_list,
-                                                                        example_inputs=example_inputs,
-                                                                        example_outputs=example_outputs,
-                                                                        max_inference_step=step2,
-                                                                        start_weights=module_weights,
-                                                                        batch_size=5,
-                                                                        mode='succeed',
-                                                                        )
+
             
             # model_weight_stat[i] = module_weights
             valid_inputs = [x[0] for x in io]
@@ -137,5 +125,5 @@ for seed in seeds:
         
         print("task accuracy:", perf)
 
-    utils.save_results(f'~/resourses/results/seed{seed}_super_special_example_center_same_init00_step1_{step1}_step2_{step2}_cosin.result', task_accs)
+    utils.save_results(f'~/resourses/results/seed{seed}_super_special_example_center_same_init00_step_{step}_cosin.result', task_accs)
 
